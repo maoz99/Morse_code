@@ -7,7 +7,7 @@
 using namespace std;
 
 map<char,string> morse_map;
-map<string, char> m_map;
+//map<string, char> m_map;
 map<char,string>::iterator i;
 
 void morsecode()
@@ -51,7 +51,7 @@ void morsecode()
      
      */
     
-    for (i = morse_map.begin(); i != morse_map.end(); i++) {
+    /*for (i = morse_map.begin(); i != morse_map.end(); i++) {
         m_map[i -> second] = i -> first;
-    }
+    }*/
 }
