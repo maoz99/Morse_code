@@ -6,6 +6,10 @@ using namespace std;
 
 void selection_sort(vector<string>& vec);
 int main() {
+	//vector<string> Binary_Tree_Ye{ "","e","i","s","h","NULL","NULL","v","NULL","NULL","u","f","NULL","NULL","NULL","a","r","l","NULL","NULL","NULL","w","p","NULL","NULL","j","NULL","NULL","t","n","d","b","NULL","NULL","x","NULL","NULL","k","c","NULL","NULL","y","NULL","NULL","m","g","z","NULL","NULL","q","NULL","NULL","o","NULL","NULL" };
+	//Binary_Search_Tree<string> binary_tree;
+	//binary_tree.read_tree(Binary_Tree_Ye);
+	
 	//vector<std::string> BinarySearchData_2{"", "e", "t"};
 	////,"i","e","h","f","g"
 	ifstream istream; //create istream to read in morse.txt file
