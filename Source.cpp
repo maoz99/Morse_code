@@ -6,8 +6,8 @@
 using namespace std; 
 
 bool CheckFile(ifstream & in, string file); //Function that stops program if file not found
-void Encode(map<string, string> & morse_txt, string input);
-void Decode(string input);
+void Encode(map<string, string> & morse_txt, string input); //Letters to dots/dash
+void Decode(string input); //dots/dash to letters
 void selection_sort(vector<string>& vec);
 
 int main() {
@@ -104,7 +104,7 @@ bool CheckFile(ifstream & in, string file)
 }
 
 void Encode(map<string, string> & morse_txt, string input) {
-
+	//Letters to dots
 	map<string, string>::iterator iter; //create iterator to go through map
 	cout << "Enocded message: ";
 	for (int i = 0; i < input.length(); i++) {
@@ -121,6 +121,7 @@ void Encode(map<string, string> & morse_txt, string input) {
 
 void Decode(string input)
 {
+	//dots to letters
 	cout << "Decoding output...\n";
 
 }
