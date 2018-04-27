@@ -1,0 +1,172 @@
+#include<iostream>
+#include "Binary_Search_Tree.h"
+#include "BTNode.h"
+#include <fstream>
+#include <map>
+using namespace std;
+
+bool CheckFile(ifstream & in, string file); //Function that stops program if file not found
+void Encode(map<string, string> & morse_txt, string input); //Letters to dots/dash
+void Decode(Binary_Search_Tree<string> binary_tree, string input);//dots/dash
+void selection_sort(vector<string>& vec);
+
+int main() {
+	//-------------------------------------------ATTEMPT #1: USING READ TREE--------------------------------------------------
+	//This is what the Binary tree vector should look like
+	vector<string> Binary_Tree_Ye{ "","e","i","s","h","NULL","NULL","v","NULL","NULL","u","f","NULL","NULL","NULL","a","r","l","NULL","NULL","NULL","w","p","NULL","NULL","j","NULL","NULL","t","n","d","b","NULL","NULL","x","NULL","NULL","k","c","NULL","NULL","y","NULL","NULL","m","g","z","NULL","NULL","q","NULL","NULL","o","NULL","NULL" };
+
+	//Open & Check file
+	ifstream istream; //create istream to read in morse.txt file
+	istream.open("morse.txt");
+	if (!CheckFile(istream, "morse.txt"))
+		return -1;
+
+	//Create map & vector to store data
+	vector<string> the_vector;
+	map<string, string> morse_txt; //create map
+
+								   //read file and store data
+	while (!istream.eof()) {
+		string s1;
+		getline(istream, s1); //read line and insert into string
+		string key = s1.substr(0); //first index is the key or alphabetic letter
+								   //cout << key;
+		string val = s1.substr(1, s1.length()); //start from index 1 of string to the end to make value or morse code
+		morse_txt[key] = val; //set key and value into map
+							  //cout << morse_txt[key] << endl;
+		the_vector.push_back(key);
+	}
+
+	istream.close();
+
+	//--------------------------------------------ATTEMPT #3: USING INSERT-----------------------------------------------
+	//Sort the vector by values in morse code (._)
+	vector<string> dot;
+	vector<string> dash;
+	for (int j = 0; j < the_vector.size(); j++) {
+		if (the_vector[j].substr(1,1)==".")
+			dot.push_back(the_vector[j].substr(1, the_vector[j].length()));
+		else if (the_vector[j].substr(1)=="_")
+			dash.push_back(the_vector[j]);
+	}
+	selection_sort(the_vector);
+	selection_sort(dot);
+	Binary_Search_Tree<string> insert_tree;
+	for (int i = 0; i < dot.size(); i++) {
+		insert_tree.insert(dot[i]);
+	}
+	cout << insert_tree.height();
+
+	//------------------------------------------ATTEMPT #2: ITERATOR ------------------------------------------------------
+	//Iterate through vectors and enter nulls where necessary
+	//string next;
+	//int i = 2;
+	//the_vector.insert(the_vector.begin(), "");
+	//for (vector<string>::iterator iter = the_vector.begin() + 1; iter != the_vector.end(); ++iter) {
+	//	next = the_vector[i];
+	//	if (i >= the_vector.size())
+	//		break;
+
+	//	while (next == "NULL") {
+	//		i++;
+	//		next = the_vector[i];
+	//	}
+	//	while (*iter == "NULL") {
+	//		iter++;
+	//	}
+
+	//	if (iter->data() == next) {
+	//		the_vector.insert(iter, "NULL");
+	//	}
+	//	else if (iter->length() == next.length())
+	//		the_vector.insert(iter + 1, "NULL");
+
+	//	i++;
+	//}
+
+	////Create binary tree and store values from the vector
+	Binary_Search_Tree<string> binary_tree;
+	binary_tree.read_tree(Binary_Tree_Ye);
+	Decode(binary_tree, ".. _ ");
+	Encode(morse_txt, "dog");
+
+	system("pause");
+}
+
+bool CheckFile(ifstream & in, string file)
+{
+	//if file not found, output message and end program 
+	while (!in) {
+		cout << "Could not open the " << file <<
+			" file. Please check the file and try again.\n";
+		system("pause");
+		return false;
+	}
+	return true;
+}
+
+void Encode(map<string, string> & morse_txt, string input) {
+	//Letters to dots
+	map<string, string>::iterator iter; //create iterator to go through map
+	cout << "Enocded message: ";
+	for (int i = 0; i < input.length(); i++) {
+		for (iter = morse_txt.begin(); iter != morse_txt.end(); iter++) { //iterate through map
+			if (iter->first[0] == input[i]) { //iter->first calls key, if key = first index/alphabetic letter of inputted string:
+				cout << iter->second; //cout the morse code associated to it 
+				break;
+			}
+
+		}
+	}
+	cout << endl;
+}
+
+void Decode(Binary_Search_Tree<string> binary_tree,string input)
+{
+	//dots to letters
+	cout << "Decoding output...\n";
+	Binary_Tree<string> bt;
+	bool change = false; 
+	for (int i = 0; i < input.length(); i++) { //for each character in the input string 
+		if (input[i] == ' ') { 
+			cout << bt.get_data(); //cout the letter corresponding to the code beforehand
+			bt = binary_tree; //restart binary tree
+			change = false; //restart change
+		}
+		else if (input[i] == '.') { 
+			if (change) { //if change == true or we are already looking through the tree
+				bt=bt.get_left_subtree(); //move left 
+			}
+			else { //just look at the first left node
+				bt = binary_tree.get_left_subtree();
+				change = true; //we are moving further into tree
+			}
+		}
+		else if (input[i] == '_') { // ^same
+			if (change) {
+				bt = bt.get_right_subtree();
+			}
+			else {
+				bt = binary_tree.get_right_subtree();
+				change = true;
+			}
+		}
+			
+	}
+}
+
+void selection_sort(vector<string>& vec) {
+
+	for (int fill = 0; fill != vec.size(); ++fill) {
+		int pos_min = fill;
+		for (int next = fill + 1; next != vec.size(); ++next) {
+
+			if (vec[next].substr(1, vec[next].length()) < vec[pos_min].substr(1, vec[pos_min].length()))
+				pos_min = next;
+
+		}
+		if (fill != pos_min)
+			swap(vec[pos_min], vec[fill]);
+
+	}
+}
