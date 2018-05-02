@@ -34,27 +34,25 @@ bool Morse_Tree<Item_Type>::insert(Item_Type& item)
 template<typename Item_Type>
 bool Morse_Tree<Item_Type>::insert(BTNode<Item_Type>*& local_root, Item_Type& item)
 {
-
 	/*for (Item_Type::iterator it = item.begin(); it != item.end(); ++it)*/ //This was the first attempt, switch the item.substr(i)'s to "it" 
 	for (int i = 0; i<item.size(); i++) {//iterating through the string
-		if ((item.substr(i) == ".") && (item.substr(i) != item.end())) {  //if the first index in the string is a ".", and we are not at the end of our string
+		if ((item.substr(i) == ".") && (i != item.size()-1)) {  //if the first index in the string is a ".", and we are not at the end of our string
 			if (local_root->left == NULL) { //if the left is NULL
 				local_root->left = new BTNode<Item_Type>(NULL); //insert a new BTNode there 
 				local_root = local_root->left;
 			}
 		}
-		else if ((item.substr(i) == "_") && (item.substr(i) != item.end())) {  //same as above but opposite
+		else if ((item.substr(i) == "_") && (i != item.size()-1)) {  //same as above but opposite
 			if (local_root->right == NULL) {
 				local_root->right = new BTNode<Item_Type>(NULL);
 				local_root = local_root->right;
 			}
 
 		}
-		else if (item.substr(i) == item.end()) {  //if we've made it to our destination, assign a new value to that spot
+		else if (i == item.size()-1) {  //if we've made it to our destination, assign a new value to that spot
 			local_root = new BTNode<Item_Type>(item);
 			return true;
 		}
-
 
 	}
 	return false;
