@@ -46,11 +46,6 @@ int main() {
 	MT.Decode(binary_tree, "._ _... _._. _.. . .._. __. .... .. .___ _._ ._.. __ _. ___ .__. __._ ._. ... _ .._ ..._ .__ _.._ _.__ __..");
 	MT.Encode(morse_txt, "abc def ghi jkl mno pqr stu vwx yz");
 
-	Binary_Search_Tree<string> BT;
-	for (int i = 1; i < the_vector.size(); i++) {
-		BT.insert(the_vector[i]);
-	}
-	cout << BT.getRoot();
 
 	system("pause");
 }
