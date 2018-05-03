@@ -1,54 +1,124 @@
+#pragma once
+#include<iostream>
 #include "Binary_Search_Tree.h"
-
+#include "BTNode.h"
+#include <fstream>
+#include "Morse_Tree.h"
+#include <map>
+#include <vector>
+using namespace std;
 template<typename Item_Type>
-class Morse_Tree : public Binary_Search_Tree<Item_Type>{
-private:
-	bool insert(BTNode<Item_Type>*& local_root, const Item_Type& item);
-};
+class Morse_Tree : public Binary_Search_Tree<Item_Type> {
+public:
 
-template<typename Item_Type>
-inline bool Morse_Tree<Item_Type>::insert(BTNode<Item_Type>*& local_root, const Item_Type & item)
-{
-	if (local_root == NULL) {
-		local_root = new BTNode<Item_Type>(item);
-		return true;
-	}
-	else {
-		if (item < local_root->data && item[1] == '.')
-			return insert(local_root->left, item);
-		else if (local_root->data < item && item[1] == '_')
-			return insert(local_root->right, item);
-		else
-			return false;
-	}
-}
-
-
-template<typename Item_Type>
-inline bool Morse_Tree<Item_Type>::insert(BTNode<Item_Type>*& local_root, const Item_Type & item) 
-{
+	void Encode(map<string, string> & morse_txt, string input) {
 	
-	BTNode<Item_Type> temp;
-	for (int i = 0; i < item.size(); i++) {
-		if ((item[i] == ".") && (item[i] != item.end()) {
-			if (local_root->left->data == NULL) {
+		//Letters to dots
+		map<string, string>::iterator iter; //create iterator to go through map
+		cout << "Enocded message: ";
+		for (int i = 0; i < input.length(); i++) {
+			if (input[i] != ' ') {
+				for (iter = morse_txt.begin(); iter != morse_txt.end(); iter++) { //iterate through map
+					if (iter->first[0] == input[i]) { //iter->first calls key, if key = first index/alphabetic letter of inputted string:
+						cout << iter->second; //cout the morse code associated to it 
+						break;
+					}
+				}
+			}
+			else
+				cout << "\n";
+		}
+		cout << endl;
+	} 
+
+
+	void Decode(Binary_Search_Tree<string> binary_tree, string input) {
+		//dots to letters
+		cout << "Decoding output...";
+		Binary_Tree<string> bt;
+		bool change = false;
+		for (int i = 0; i < input.length(); i++) { //for each character in the input string 
+			if (input[i] == ' ') {
+				cout << bt.get_data()[0]; //cout the letter corresponding to the code beforehand
+				bt = binary_tree; //restart binary tree
+				change = false; //restart change
+			}
+			else if (input[i] == '.') {
+				if (change) { //if change == true or we are already looking through the tree
+					bt = bt.get_left_subtree(); //move left 
+				}
+				else { //just look at the first left node
+					bt = binary_tree.get_left_subtree();
+					change = true; //we are moving further into tree
+				}
+			}
+			else if (input[i] == '_') { // ^same
+				if (change) {
+					bt = bt.get_right_subtree();
+				}
+				else {
+					bt = binary_tree.get_right_subtree();
+					change = true;
+				}
+			}
+
+		}
+		cout << bt.get_data()[0];
+		cout << endl << endl;
+
+	}
+
+
+
+	void selection_sort(vector<string>& vec) {
+		for (int fill = 0; fill != vec.size(); ++fill) {
+			int pos_min = fill;
+			for (int next = fill + 1; next != vec.size(); ++next) {
+
+				if (vec[next].substr(1, vec[next].length()) < vec[pos_min].substr(1, vec[pos_min].length()))
+					pos_min = next;
 
 			}
+			if (fill != pos_min)
+				swap(vec[pos_min], vec[fill]);
+
 		}
 	}
-}
-//template<typename Item_Type>
-//bool Binary_Search_Tree<Item_Type>::insert(BTNode<Item_Type>*& local_root, const Item_Type& item) {
-//	if (local_root == NULL) {
-//		local_root = new BTNode<Item_Type>(item);
-//		return true;
-//	}
-//	else {
-//		if (item > local_root->data)
-//			return insert(local_root->left, item);
-//		else if (local_root->data > item)
-//			return insert(local_root->right, item);
-//		else
-//			return false;
-//	}
-//}
+
+
+
+
+
+	Binary_Search_Tree<string> CreateTree(vector<string> the_vector) {
+	
+		this->selection_sort(the_vector);
+		//Iterate through vectors and enter nulls where necessary
+		vector<string> BTVec;
+		BTVec.push_back("");
+		for (int i = 0; i < the_vector.size(); i++) {
+			int length = the_vector[i].length();
+			if ((length == 5 && the_vector[i + 1].length() == 5) || (length == 5 && the_vector[i - 1].length() == 5)) {
+				BTVec.push_back(the_vector[i]);
+				BTVec.push_back("NULL");
+				BTVec.push_back("NULL");
+			}
+			else if ((length == 5 && the_vector[i - 2].length() == 5) || (length == 5 && the_vector[i - 2].length() != 5)) {
+				BTVec.push_back(the_vector[i]);
+				BTVec.push_back("NULL");
+				BTVec.push_back("NULL");
+				BTVec.push_back("NULL");
+			}
+			else
+				BTVec.push_back(the_vector[i]);
+		}
+
+
+		Binary_Search_Tree<string> binary_tree;
+		binary_tree.read_tree(BTVec);
+
+		return binary_tree;
+	
+	}
+
+	
+};
