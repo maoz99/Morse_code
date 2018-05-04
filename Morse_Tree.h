@@ -13,27 +13,27 @@ public:
 
 	void Encode(map<string, string> & morse_txt, string input) {
 	
-		//Letters to dots
-		map<string, string>::iterator iter; //create iterator to go through map
+		//Takes in a string of letters and prints out the dots/dashes
+		map<string, string>::iterator iter; 
 		cout << "Enocded message: ";
-		for (int i = 0; i < input.length(); i++) {
-			if (input[i] != ' ') {
+		for (int i = 0; i < input.length(); i++) { //iterate through string
+			if (input[i] != ' ') { //Make sure its not a space
 				for (iter = morse_txt.begin(); iter != morse_txt.end(); iter++) { //iterate through map
-					if (iter->first[0] == input[i]) { //iter->first calls key, if key = first index/alphabetic letter of inputted string:
-						cout << iter->second; //cout the morse code associated to it 
+					if (iter->first[0] == input[i]) { //iter->first calls key, if key = first letter letter of:
+						cout << iter->second; //cout the morse code (value) associated to it 
 						break;
 					}
 				}
 			}
 			else
-				cout << "\n";
+				cout << "\n"; //if its a space, create a new line 
 		}
 		cout << endl;
 	} 
 
 
 	void Decode(Binary_Search_Tree<string> binary_tree, string input) {
-		//dots to letters
+		//takes in a string of dots/dashes and outputs the string of letters
 		cout << "Decoding output...";
 		Binary_Tree<string> bt;
 		bool change = false;
@@ -71,10 +71,11 @@ public:
 
 
 	void selection_sort(vector<string>& vec) {
+		//take in a vector of strings with both letter and code, sort it only by the code
 		for (int fill = 0; fill != vec.size(); ++fill) {
 			int pos_min = fill;
 			for (int next = fill + 1; next != vec.size(); ++next) {
-
+				//use substring to ignore the first index and only sort the code part of the string (dots/dashes)
 				if (vec[next].substr(1, vec[next].length()) < vec[pos_min].substr(1, vec[pos_min].length()))
 					pos_min = next;
 
@@ -92,27 +93,29 @@ public:
 	Binary_Search_Tree<string> CreateTree(vector<string> the_vector) {
 	
 		this->selection_sort(the_vector);
-		//Iterate through vectors and enter nulls where necessary
-		vector<string> BTVec;
-		BTVec.push_back("");
-		for (int i = 0; i < the_vector.size(); i++) {
+
+		vector<string> BTVec; //Create new vector
+		BTVec.push_back(""); //first item of vector will be the dummy node with no data
+		for (int i = 0; i < the_vector.size(); i++) { //iterate through vector
 			int length = the_vector[i].length();
 			if ((length == 5 && the_vector[i + 1].length() == 5) || (length == 5 && the_vector[i - 1].length() == 5)) {
+				//if the node should be a leaf node, push in the item followed by 2 nulls
 				BTVec.push_back(the_vector[i]);
 				BTVec.push_back("NULL");
 				BTVec.push_back("NULL");
 			}
 			else if ((length == 5 && the_vector[i - 2].length() == 5) || (length == 5 && the_vector[i - 2].length() != 5)) {
+				//if the node is a single child, push in the value followed by 3 NULLS (2 NULLS make it a leaf, 1 NULL makes the other child not exist
 				BTVec.push_back(the_vector[i]);
 				BTVec.push_back("NULL");
 				BTVec.push_back("NULL");
 				BTVec.push_back("NULL");
 			}
-			else
+			else //if the node has 2 children, just push it in.
 				BTVec.push_back(the_vector[i]);
 		}
 
-
+		//use this new vector to create the binary tree
 		Binary_Search_Tree<string> binary_tree;
 		binary_tree.read_tree(BTVec);
 
